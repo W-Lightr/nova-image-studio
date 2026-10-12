@@ -485,13 +485,13 @@ export function resolveDerivedImageProtocol(
   modelId: string,
   presetId: BuiltinImagePresetId,
 ): ProviderProtocol {
-  if (presetId.startsWith('grok-') || /grok-imagine-image|grok-imagine-edit/.test(modelId.toLowerCase())) return 'grok';
-  if (presetId.startsWith('doubao') || modelId.toLowerCase().includes('seedream')) return 'doubao';
-  if (presetId.startsWith('alibaba') || /qwen-image|^wan2/.test(modelId.toLowerCase())) return 'alibaba-dashscope';
-  if (isGptImageModelId(modelId) || presetId.startsWith('gpt-image')) return 'openai';
-  if (presetId === 'antigravity-gemini-image') return 'openai';
-  if (presetId.startsWith('gemini') || isGeminiImageModelId(modelId)) {
-    return kind === 'google' ? 'google' : 'openai';
+  void modelId;
+  const preset = BUILTIN_IMAGE_PRESETS[presetId];
+  if (preset) {
+    if (preset.protocol === 'google') {
+      return kind === 'google' ? 'google' : 'openai';
+    }
+    return preset.protocol;
   }
   return imageProtocolForKind(kind);
 }
